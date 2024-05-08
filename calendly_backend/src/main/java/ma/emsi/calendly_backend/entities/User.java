@@ -16,5 +16,7 @@ public class User {
     private Long id;
     private String name;
     private String email;
+    private String oauthProvider; // Example: "Google", "Facebook", etc.
+    private String oauthProviderUserId; // Unique ID provided by the OAuth provider
 
 }

@@ -1,20 +1,14 @@
-import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 const Home = () => {
-  useEffect(() => {
-    const auth = localStorage.getItem("auth");
-    const authObject = auth ? JSON.parse(auth) : null;
-
-    if (!authObject || !authObject.accessToken) {
-      console.log(authObject);
-      console.log(authObject?.accessToken); // Add a null check here
-    }
-  }); // Include test as a dependency
+  const redirectToFrontend = () => {
+    window.location.href = "http://localhost:8787/oauth2/authorization/google";
+  };
 
   return (
-    <div>
-      <h1>Welcome to the Home Page</h1>
-      {/* Display additional content for authenticated users here */}
+    <div className="flex flex-col items-center gap-10 h-screen  justify-center">
+      <h1 className="text-5xl font-bold">Welcome to the Home Page</h1>
+      <Button onClick={redirectToFrontend}>Login</Button>
     </div>
   );
 };

@@ -15,13 +15,5 @@ public class CalendlyBackendApplication {
     }
 
 
-    @Bean
-    CommandLineRunner commandLineRunner(UserRepository userRepository){
-        return args -> {
-            userRepository.save(User.builder().name("said").email("said@gmail.com").build());
-            userRepository.save(User.builder().name("nawfal").email("nawfal@gmail.com").build());
-            userRepository.save(User.builder().name("imane").email("imane@gmail.com").build());
 
-        };
-    }
 }

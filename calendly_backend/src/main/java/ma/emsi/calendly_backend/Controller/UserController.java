@@ -29,6 +29,7 @@ public class UserController {
     @GetMapping("/auth")
     @ResponseBody
     public Authentication authentication(Authentication authentication){
+
         return authentication;
     }
 }
