@@ -1,9 +1,6 @@
 package ma.emsi.calendly_backend.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.IdGeneratorType;
 
@@ -14,8 +11,12 @@ public class Events {
     Long id;
     String Title;
     String Description;
-    String Link;
     String location;
     String startTime;
     String endTime;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 }
+

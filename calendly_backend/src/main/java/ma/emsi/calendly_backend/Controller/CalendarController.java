@@ -9,7 +9,7 @@ import ma.emsi.calendly_backend.entities.Events;
 import ma.emsi.calendly_backend.services.GoogleCalendarService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5173/")
 public class CalendarController {
 
     private final GoogleCalendarService googleCalendarService;

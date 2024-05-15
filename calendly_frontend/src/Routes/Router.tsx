@@ -5,6 +5,7 @@ import EventForm from "../Pages/EventForm";
 import EventList from "../Pages/Events/EventList";
 import CreateEvent from "../Pages/Events/CreateEvent";
 import ModifyEvent from "../Pages/Events/ModifyEvent";
+import DashBoard from "@/components/DashBoard";
 
 const Router = () => {
   return (
@@ -17,6 +18,7 @@ const Router = () => {
           <Route path="/modify/:id" Component={ModifyEvent} />
           <Route path="/events" Component={EventForm} />
           <Route path="/tok" Component={tok} />
+          <Route path="/board" Component={DashBoard} />
         </Routes>
       </BrowserRouter>
     </>

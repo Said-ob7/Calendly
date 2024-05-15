@@ -1,10 +1,9 @@
 package ma.emsi.calendly_backend.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 
 @Entity
@@ -18,5 +17,7 @@ public class User {
     private String email;
     private String oauthProvider; // Example: "Google", "Facebook", etc.
     private String oauthProviderUserId; // Unique ID provided by the OAuth provider
+    @OneToMany
+    private List<Events> events;
 
 }
