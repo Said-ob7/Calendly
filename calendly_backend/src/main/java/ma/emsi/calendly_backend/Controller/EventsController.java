@@ -27,11 +27,11 @@ public class EventsController {
     // Get all events
     // Get all events created by the authenticated user
     @GetMapping
-    public ResponseEntity<List<Events>> getAllEvents() {
+    public ResponseEntity<List<Events>> getAllEvents(@RequestParam String email) {
         // Get the authenticated user
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        User currentUser = userRepository.findByEmail(currentPrincipalName);
+
+
+        User currentUser = userRepository.findByEmail(email);
 
         // Retrieve events created by the authenticated user
         List<Events> events = eventsRepository.findByUser(currentUser);
@@ -42,16 +42,12 @@ public class EventsController {
 
     // Create a new event linked to the authenticated user
     @PostMapping
-    public ResponseEntity<Events> createEvent(@RequestBody Events event) {
-
-//        OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
-//        OAuth2User oauth2User = oauthToken.getPrincipal();
-//        String email = oauth2User.getAttribute("email");
-//        User currentUser = userRepository.findByEmail(email);
-        // Get the authenticated user
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        User currentUser = userRepository.findByEmail(currentPrincipalName);
+    public ResponseEntity<Events> createEvent(@RequestParam String email, @RequestBody Events event) {
+        // Find the user by email
+        User currentUser = userRepository.findByEmail(email);
+        if (currentUser == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         // Associate the event with the authenticated user
         event.setUser(currentUser);

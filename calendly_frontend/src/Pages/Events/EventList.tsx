@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-
 import {
   Card,
   CardContent,
@@ -10,23 +9,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Navbar from "@/components/navbar";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaShareAlt, FaClipboard } from "react-icons/fa";
+import { IoLink } from "react-icons/io5";
 
 interface Event {
   id: number;
   title: string;
   description: string;
-  startTime: string;
-  endTime: string;
+  location: string;
+  date: string;
+  duration: string;
+  link: string;
 }
 
 function EventListPage() {
   const [events, setEvents] = useState<Event[]>([]);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalLink, setModalLink] = useState("");
+  const email = localStorage.getItem("email");
   useEffect(() => {
     // Fetch events from backend upon component mount
-    fetch("http://localhost:8787/api/events")
+    fetch(`http://localhost:8787/api/events?email=${email}`)
       .then((response) => response.json())
       .then((data: Event[]) => setEvents(data))
       .catch((error) => console.error("Error fetching events:", error));
@@ -44,6 +47,23 @@ function EventListPage() {
       .catch((error) => console.error("Error deleting event:", error));
   };
 
+  const handleShare = (id: number) => {
+    const shareUrl = `${window.location.origin}/events/${id}`;
+    setModalLink(shareUrl);
+    setIsModalOpen(true);
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard
+      .writeText(modalLink)
+      .then(() => {
+        alert("Event link copied to clipboard!");
+      })
+      .catch((error) => {
+        console.error("Error copying link to clipboard:", error);
+      });
+  };
+
   return (
     <>
       <div className="flex flex-row items-center justify-between">
@@ -53,53 +73,104 @@ function EventListPage() {
             className="text-white hidden text-lg md:block"
             data-testid="subtitle"
           >
-            Create events to share to your collegues.
+            Create events to share with your colleagues.
           </p>
         </div>
         <div className="right-0 justify-between">
           <Button className="right-0" variant="outline">
             <Link className="flex flex-row items-center gap-2" to="/create">
-              <FaPlus className="" />
+              <FaPlus />
               New Event
             </Link>
           </Button>
         </div>
       </div>
 
-      <div className="flex flex-col  mt-24">
-        <div className="flex flex-wrap  gap-6 ">
+      <div className="flex flex-col mt-24">
+        <div className="flex flex-wrap gap-6">
           {events.map((event) => (
-            <Card
-              className="w-[300px] h-[250px] overflow-hidden flex flex-col bg-black text-white"
+            <Link
+              to={`/events/${event.id}`}
               key={event.id}
+              className="w-[300px]"
             >
-              <CardHeader>
-                <CardTitle className="font-mono text-3xl truncate">
-                  {event.title}
-                </CardTitle>
-                <CardDescription className="text-white truncate">
-                  {event.description}
-                </CardDescription>
-                <CardDescription className="text-white ">
-                  {event.startTime} - {event.endTime}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex-grow"></CardContent>
-              <CardFooter className="flex justify-between">
-                <button
-                  onClick={() => handleDelete(event.id)}
-                  className="shadow-[0_0_0_3px_#000000_inset] px-6 py-2 bg-white border border-gray dark:border-white dark:text-white text-black rounded-lg font-bold transform hover:-translate-y-1 transition duration-400"
-                >
-                  Delete
-                </button>
-                <button className="shadow-[0_0_0_3px_#000000_inset] px-6 py-2 bg-black border border-white dark:border-white dark:text-white text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400">
-                  <Link to={`/modify/${event.id}`}>Modify</Link>
-                </button>
-              </CardFooter>
-            </Card>
+              <Card className="h-[250px] overflow-hidden flex flex-col bg-black text-white">
+                <CardHeader>
+                  <CardTitle className="font-mono text-3xl truncate text-cyan-400">
+                    {event.title}
+                  </CardTitle>
+                  <CardDescription className="text-white truncate">
+                    {event.description}
+                  </CardDescription>
+                  <CardDescription className="text-white">
+                    {event.date} - {event.duration} minutes
+                  </CardDescription>
+                  <CardDescription className="text-white">
+                    {event.location}
+                  </CardDescription>
+                  {event.link && (
+                    <CardDescription className="text-white decoration-amber-300">
+                      <a
+                        className="flex flex-row items-center decoration-sky-500"
+                        href={event.link}
+                      >
+                        <IoLink className="mr-2" />
+                        Join Meet
+                      </a>
+                    </CardDescription>
+                  )}
+                </CardHeader>
+                <CardContent className="flex-grow"></CardContent>
+                <CardFooter className="flex justify-between">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent the link from navigating
+                      handleDelete(event.id);
+                    }}
+                    className="shadow-[0_0_0_3px_#000000_inset] px-6 py-2 bg-white border border-gray dark:border-white dark:text-white text-black rounded-lg font-bold transform hover:-translate-y-1 transition duration-400"
+                  >
+                    Delete
+                  </button>
+                  <button className="shadow-[0_0_0_3px_#000000_inset] px-6 py-2 bg-black border border-white dark:border-white dark:text-white text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400">
+                    <Link to={`/modify/${event.id}`}>Modify</Link>
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent the link from navigating
+                      handleShare(event.id);
+                    }}
+                    className="shadow-[0_0_0_3px_#000000_inset] px-6 py-2 bg-blue-500 text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400"
+                  >
+                    <FaShareAlt />
+                  </button>
+                </CardFooter>
+              </Card>
+            </Link>
           ))}
         </div>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-bold mb-4">Share Event</h2>
+            <p className="mb-4">{modalLink}</p>
+            <button
+              onClick={handleCopy}
+              className="shadow-[0_0_0_3px_#000000_inset] px-6 py-2 bg-blue-500 text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400"
+            >
+              <FaClipboard className="inline-block mr-2" />
+              Copy Link
+            </button>
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="shadow-[0_0_0_3px_#000000_inset] px-6 py-2 bg-red-500 text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 ml-4"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

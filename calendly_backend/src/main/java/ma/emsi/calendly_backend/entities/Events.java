@@ -12,8 +12,9 @@ public class Events {
     String Title;
     String Description;
     String location;
-    String startTime;
-    String endTime;
+    String date;
+    String duration;
+    String link;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

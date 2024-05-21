@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-
+import { Navigate, useNavigate } from "react-router-dom";
 function App() {
   const [idToken, setIdToken] = useState("");
   const [Name, setName] = useState("");
   const [profile, setProfile] = useState("");
+  const [Email, serEmail] = useState("");
 
   useEffect(() => {
     // Define the endpoint URL
@@ -29,10 +30,12 @@ function App() {
         const idTokenValue = data.authorities[0].idToken.tokenValue;
         const Name = data.authorities[0].attributes.name;
         const profile = data.authorities[0].attributes.picture;
+        const email = data.authorities[0].attributes.email;
         setIdToken(idTokenValue);
         localStorage.setItem("accessToken", idTokenValue);
         localStorage.setItem("name", Name);
         localStorage.setItem("profile", profile);
+        localStorage.setItem("email", email);
         setName(Name);
         console.log(Name);
         console.log(idTokenValue);
