@@ -15,6 +15,7 @@ public class Events {
     String date;
     String duration;
     String link;
+    String time;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
